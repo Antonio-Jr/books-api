@@ -1,0 +1,11 @@
+/Users/antonio-jr/Projetos/BookApi/Books.Domain/bin/Debug/net8.0/Books.Domain.deps.json
+/Users/antonio-jr/Projetos/BookApi/Books.Domain/bin/Debug/net8.0/Books.Domain.dll
+/Users/antonio-jr/Projetos/BookApi/Books.Domain/bin/Debug/net8.0/Books.Domain.pdb
+/Users/antonio-jr/Projetos/BookApi/Books.Domain/obj/Debug/net8.0/Books.Domain.GeneratedMSBuildEditorConfig.editorconfig
+/Users/antonio-jr/Projetos/BookApi/Books.Domain/obj/Debug/net8.0/Books.Domain.AssemblyInfoInputs.cache
+/Users/antonio-jr/Projetos/BookApi/Books.Domain/obj/Debug/net8.0/Books.Domain.AssemblyInfo.cs
+/Users/antonio-jr/Projetos/BookApi/Books.Domain/obj/Debug/net8.0/Books.Domain.csproj.CoreCompileInputs.cache
+/Users/antonio-jr/Projetos/BookApi/Books.Domain/obj/Debug/net8.0/Books.Domain.dll
+/Users/antonio-jr/Projetos/BookApi/Books.Domain/obj/Debug/net8.0/refint/Books.Domain.dll
+/Users/antonio-jr/Projetos/BookApi/Books.Domain/obj/Debug/net8.0/Books.Domain.pdb
+/Users/antonio-jr/Projetos/BookApi/Books.Domain/obj/Debug/net8.0/ref/Books.Domain.dll
