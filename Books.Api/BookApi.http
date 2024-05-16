@@ -1,6 +1,49 @@
-#@BookApi_HostAddress = http://localhost:5152
+< {%
 
-GET http://localhost:5152/
-Accept: application/json
+    client.global.set("base_url", "http://localhost:5001")
+    request.variables.set("book_title", "alchemist")
+%}
+
+POST {{base_url}}/graphql HTTP/1.1
+Content-Type: application/json
+
+{
+  "query": "query ($search: String!) { booksByTitle(title: $search) {title author type isbn category status totalCopies  copiesInUse}}",
+  "variables": {
+    "search": "{{book_title}}"
+  }
+}
+
+###
+
+< {% 
+  request.variables.set("author_name", "")
+ %}
+
+POST {{base_url}}/graphql HTTP/1.1
+Content-Type: application/json
+
+{
+  "query": "  query ($search: String!) {\n    authorsByName(name: $search) {\n      firstName\n      lastName\n      books {\n        title\n        author\n        type\n        isbn\n        category\n        status\n        totalCopies\n        copiesInUse\n      }\n    }\n  }",
+  "variables": {
+    "search": "{{author_name}}"
+  }
+}
+
+###
+
+< {%
+    request.variables.set("category_name", "fiction")
+%}
+
+POST {{base_url}}/graphql HTTP/1.1
+Content-Type: application/json
+
+{
+  "query": " query ($search: String!) {\n    categoriesByName(name: $search) {\n     name\n      books {\n        title\n        author\n        type\n        isbn\n        category\n        status\n        totalCopies\n        copiesInUse\n      }\n    }\n  }",
+  "variables": {
+    "search": "{{category_name}}"
+  }
+}
 
 ###
