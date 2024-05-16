@@ -1,0 +1,49 @@
+﻿version: '3.9'
+
+services:
+  books_db:
+    image: postgres:15.3-alpine
+    container_name: books_db
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_DB: books
+      POSTGRES_HOST_AUTH_METHOD: trust
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres -d books" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - ./.containers/books_db:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+    networks:
+      - books_network
+          
+  books_api:
+    image: books_api
+    container_name: books_api
+    build:
+      context: .
+      dockerfile: Books.Api/Dockerfile
+    ports:
+      - "80:80"
+      - "443:443"
+      - "5000:5000"
+    restart: always
+    volumes:
+      - .:/src
+    depends_on:
+      books_db:
+        condition: service_healthy
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_HTTP_PORTS=5168
+    networks:
+      - books_network 
+
+networks:
+  books_network:
+    driver: bridge
