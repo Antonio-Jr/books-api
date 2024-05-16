@@ -1,7 +1,6 @@
-namespace Book.Service.Book;
+namespace Books.Service.Book;
 
 public interface IBookService
 {
-    Task<IEnumerable<BooksResponseDto>> GetAllAsync();
-    Task<BooksResponseDto?> GetByTitleAsync(string title);
+    IAsyncEnumerable<BooksResponseDto> GetByTitleAsync(string title);
 }

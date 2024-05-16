@@ -1,7 +1,6 @@
-namespace Book.Service.Category;
+namespace Books.Service.Category;
 
 public interface ICategoryService
 {
-    Task<IEnumerable<CategoryResponseDto>> GetAllAsync();
-    Task<CategoryResponseDto?> GetByNameAsync(string name);
+    IAsyncEnumerable<CategoryResponseDto> GetByNameAsync(string name);
 }

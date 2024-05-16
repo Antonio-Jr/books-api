@@ -9,6 +9,8 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="HotChocolate.AspNetCore" Version="13.9.4" />
+        <PackageReference Include="HotChocolate.Data.EntityFramework" Version="13.9.4" />
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.4" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
     </ItemGroup>
@@ -16,6 +18,12 @@
     <ItemGroup>
       <ProjectReference Include="..\Books.Service\Books.Service.csproj" />
       <ProjectReference Include="..\Books.Infrastructure\Books.Infrastructure.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Include="..\.dockerignore">
+        <Link>.dockerignore</Link>
+      </Content>
     </ItemGroup>
 
 </Project>

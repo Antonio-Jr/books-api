@@ -1,11 +1,11 @@
 using System.Text.Json.Serialization;
-using Book.Service.Author;
-using Book.Service.Book;
-using Book.Service.Category;
+using Books.Api.GraphQL;
+using Books.Service.Author;
+using Books.Service.Book;
+using Books.Service.Category;
 using Domain.Interfaces;
 using Infrastructure;
 using Infrastructure.Repositories;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -21,10 +21,14 @@ builder.Services.AddDbContext<DataContext>(
             .UseSnakeCaseNamingConvention();
     });
 
-// Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddCors();
+
+builder.Services
+    .AddGraphQLServer()
+    .AddFiltering()
+    .AddSorting()
+    .AddProjections()
+    .AddQueryType<Query>();
 
 builder.Services.AddTransient(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddTransient<IAuthorRepository, AuthorRepository>();
@@ -40,52 +44,12 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
-
-app.UseHttpsRedirection();
-
-using (var serviceScope = app.Services.CreateScope())
-{
+    using var serviceScope = app.Services.CreateScope();
     var dbContext = serviceScope.ServiceProvider.GetRequiredService<DataContext>();
     dbContext.Database.Migrate();
 }
 
-app.MapGet("/books", async (IBookService service) =>
-{
-    var data = await service.GetAllAsync();
-    return data;
-});
-
-app.MapGet("/books/title", async ([FromQuery] string title, IBookService service) =>
-{
-    var data = await service.GetByTitleAsync(title);
-    return data;
-});
-
-app.MapGet("/authors", async (IAuthorService service) =>
-{
-    var data = await service.GetAllAsync();
-    return data;
-});
-
-app.MapGet("/authors/name", async ([FromQuery] string name, IAuthorService service) =>
-{
-    var data = await service.GetByNameAsync(name);
-    return data;
-});
-
-app.MapGet("/categories", async (ICategoryService service) =>
-{
-    var data = await service.GetAllAsync();
-    return data;
-});
-
-app.MapGet("/categories/name", async ([FromQuery] string name, ICategoryService service) =>
-{
-    var data = await service.GetByNameAsync(name);
-    return data;
-});
+app.UseCors(options => { options.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin(); });
+app.MapGraphQL(path: "/graphql");
 
 app.Run();

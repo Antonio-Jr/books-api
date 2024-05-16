@@ -1,43 +1,18 @@
-using Book.Service.Book;
+using Books.Service.Book;
 using Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-namespace Book.Service.Author;
+namespace Books.Service.Author;
 
 public class AuthorService(IAuthorRepository repository) : IAuthorService
 {
-    public async Task<IEnumerable<AuthorResponseDto>> GetAllAsync()
+    public IAsyncEnumerable<AuthorResponseDto> GetByNameAsync(string name)
     {
-        var data = await repository.Find()
-            .Include(c => c.Books)
-            .ThenInclude(c => c.Category)
-            .Select(a =>
-                new AuthorResponseDto(
-                    a.FirstName,
-                    a.LastName,
-                    a.FullName,
-                    a.Books.Select(b =>
-                        new BooksResponseDto
-                        (
-                            b.Title,
-                            b.Author.FullName,
-                            nameof(b.BookType),
-                            b.Isbn,
-                            b.Category.Name,
-                            b.Status.HasValue ? nameof(b.Status) : string.Empty,
-                            b.TotalCopies,
-                            b.CopiesInUse
-                        )).ToList()
-                ))
-            .ToListAsync();
-
-        return data;
-    }
-
-    public async Task<AuthorResponseDto?> GetByNameAsync(string name)
-    {
-        var author = await repository
-            .Find(c => EF.Functions.Like(c.FirstName.ToLower(), name.ToLower()))
+        var author = repository
+            .Find(c =>
+                EF.Functions.Like(c.FirstName.ToLower(), $"%{name.ToLower()}%") ||
+                EF.Functions.Like(c.LastName.ToLower(), $"%{name.ToLower()}%")
+            )
             .Include(c => c.Books)
             .ThenInclude(c => c.Category)
             .Select(a => new AuthorResponseDto(
@@ -49,14 +24,16 @@ public class AuthorService(IAuthorRepository repository) : IAuthorService
                     (
                         b.Title,
                         b.Author.FullName,
-                        nameof(b.BookType),
+                        b.BookType.ToString(),
                         b.Isbn,
                         b.Category.Name,
-                        b.Status.HasValue ? nameof(b.Status) : string.Empty,
+                        b.Status.HasValue ? b.Status.Value.ToString() : string.Empty,
                         b.TotalCopies,
                         b.CopiesInUse
                     )).ToList()
-            )).FirstOrDefaultAsync();
+            ))
+            .AsNoTracking()
+            .AsAsyncEnumerable();
 
         return author;
     }

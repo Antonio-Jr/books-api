@@ -1,7 +1,6 @@
-namespace Book.Service.Author;
+namespace Books.Service.Author;
 
 public interface IAuthorService
 {
-    Task<IEnumerable<AuthorResponseDto>> GetAllAsync();
-    Task<AuthorResponseDto?> GetByNameAsync(string name);
+    IAsyncEnumerable<AuthorResponseDto> GetByNameAsync(string name);
 }

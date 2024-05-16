@@ -1,50 +1,29 @@
-using Domain.Enums;
 using Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-namespace Book.Service.Book;
+namespace Books.Service.Book;
 
 public class BookService(IBookRepository repository) : IBookService
 {
-    public async Task<IEnumerable<BooksResponseDto>> GetAllAsync()
+    public IAsyncEnumerable<BooksResponseDto> GetByTitleAsync(string title)
     {
-        var data = await repository.Find()
-            .Include(c => c.Author)
-            .Include(c => c.Category)
-            .Select(b => new BooksResponseDto
-            (
-                b.Title,
-                b.Author.FullName,
-                nameof(b.BookType),
-                b.Isbn,
-                b.Category.Name,
-                b.Status.HasValue ? nameof(b.Status) : string.Empty,
-                b.TotalCopies,
-                b.CopiesInUse
-            ))
-            .ToListAsync();
-
-        return data;
-    }
-
-    public async Task<BooksResponseDto?> GetByTitleAsync(string title)
-    {
-        var book = await repository
-            .Find(c => EF.Functions.Like(c.Title.ToLower(), title.ToLower()))
+        var books = repository
+            .Find(c => EF.Functions.Like(c.Title.ToLower(), $"%{title.ToLower()}%"))
             .Include(c => c.Category)
             .Include(c => c.Author)
             .Select(b => new BooksResponseDto(
                 b.Title,
                 b.Author.FullName,
-                nameof(b.BookType),
+                b.BookType.ToString(),
                 b.Isbn,
                 b.Category.Name,
-                b.Status.HasValue ? nameof(b.Status) : string.Empty,
+                b.Status.HasValue ? b.Status.Value.ToString() : string.Empty,
                 b.TotalCopies,
                 b.CopiesInUse)
             )
-            .FirstOrDefaultAsync();
+            .AsNoTracking()
+            .AsAsyncEnumerable();
 
-        return book;
+        return books;
     }
 }

@@ -1,6 +1,6 @@
-using Book.Service.Book;
+using Books.Service.Book;
 
-namespace Book.Service.Author;
+namespace Books.Service.Author;
 public record AuthorResponseDto(
     string FirstName,
     string LastName,

@@ -1,6 +1,6 @@
-using Book.Service.Book;
+using Books.Service.Book;
 
-namespace Book.Service.Category;
+namespace Books.Service.Category;
 public record CategoryResponseDto(
     string Name,
     ICollection<BooksResponseDto> Books

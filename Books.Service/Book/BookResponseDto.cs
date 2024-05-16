@@ -1,4 +1,4 @@
-namespace Book.Service.Book;
+namespace Books.Service.Book;
 
 public record BooksResponseDto(
     string Title,
